@@ -12,7 +12,6 @@ class MintyTestController extends Controller
     {
         try {
             $bookings = Booking::select('id', 'checkin_at', 'checkout_at')->get();
-            // $bookings = Booking::all();
 
             return response()->json($bookings);
         } catch (\Exception $e) {
