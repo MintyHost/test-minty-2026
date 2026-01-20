@@ -11,6 +11,9 @@ class MintyTestController extends Controller
     public function getBookings()
     {
         try {
+            // Fake sleep to simulate a long loading time
+            sleep(2);
+
             $bookings = Booking::select('id', 'checkin_at', 'checkout_at')->get();
 
             return response()->json($bookings);
