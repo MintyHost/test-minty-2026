@@ -59,4 +59,8 @@ The project includes a minimal setup to help you focus on the exercise:
 | Guest Interface | Implement the guest functionality so that it is accessible **within each booking card**. You are free to choose the approach and layout that provides the best UX for managing guests. |
 | Extra Improvements (Optional) | If you still have extra time, consider adding polishing features such as a dynamic search to filter bookings by guest name and pagination for the bookings list. Focus on improving user experience. |
 
+# Other
+
+You can use `php artisan initialize-bookings` to generate new dummy entries in the booking tables if necessary. 
+
 # Good luck!
