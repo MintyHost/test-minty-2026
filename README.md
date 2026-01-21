@@ -53,7 +53,7 @@ The project includes a minimal setup to help you focus on the exercise:
 
 | Task | Description |
 |------|------------|
-| Implement new Guest data model | Add a new `create_guests_table.php` migration and implement the relevant `Guest` model. Add relationships to link guests to bookings. |
+| Implement new Guest data model | Add a new `create_guests_table.php` migration (`php artisan make:migration`) and implement the relevant `Guest` model. Add relationships to link guests to bookings. |
 | Display Bookings | Using the Pinia store, display the bookings in a **grid layout**. Ensure all relevant fields are shown and use **Tailwind CSS** to style the booking cards. |
 | Implement Guest Functionality | Extend the application to allow complete management of guest data. Users should be able to **create, read, update, and delete** guest entries directly linked to individual bookings. |
 | Guest Interface | Implement the guest functionality so that it is accessible **within each booking card**. You are free to choose the approach and layout that provides the best UX for managing guests. |
