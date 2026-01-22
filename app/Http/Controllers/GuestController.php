@@ -12,6 +12,7 @@ class GuestController extends Controller
      */
 public function index() {
     return Guest::all();
+
 }
 
 
