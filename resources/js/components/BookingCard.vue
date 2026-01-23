@@ -19,7 +19,27 @@ const newGuest = reactive({
     phone_number: ''
 });
 
+const errors = reactive({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone_number: ''
+})
+
+const resetFormState = () => {
+    newGuest.first_name = '';
+    newGuest.last_name = '';
+    newGuest.email = '';
+    newGuest.phone_number = '';
+
+    errors.first_name = '';
+    errors.last_name = '';
+    errors.email = '';
+    errors.phone_number = '';
+};
+
 const editGuest = (guest) => {
+    resetFormState();
     editingGuestId.value = guest.id; 
     newGuest.first_name = guest.first_name;
     newGuest.last_name = guest.last_name;
@@ -30,7 +50,51 @@ const editGuest = (guest) => {
     isAddingGuest.value = true;      
 };
 
+const validateForm = () => {
+    let valid = true;
+
+    if (!newGuest.first_name) {
+        errors.first_name = 'El nombre es obligatorio.';
+        valid = false;
+    } else {
+        errors.first_name = '';
+    }
+
+    if (!newGuest.last_name) {
+        errors.last_name = 'Los apellidos son obligatorios.';
+        valid = false;
+    } else {
+        errors.last_name = '';
+    }
+
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!newGuest.email) {
+        errors.email = 'El email es obligatorio.';
+        valid = false;
+    } else if (!emailRegex.test(newGuest.email)) {
+        errors.email = 'El email no es válido.';
+        valid = false;
+    } 
+
+    const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
+    if (newGuest.phone_number && !phoneRegex.test(newGuest.phone_number)) {
+        errors.phone_number = 'El teléfono contiene caracteres inválidos.';
+        isValid = false;
+    } else if (newGuest.phone_number && newGuest.phone_number.length < 6) {
+        errors.phone_number = 'El número es demasiado corto.';
+        isValid = false;
+    }
+
+    return valid;
+}
+
 const saveGuest = async () => {
+
+    if (!validateForm()) {
+        return;
+    }
+
     isSubmitting.value = true;
     let success = false;
 
@@ -74,6 +138,12 @@ const cancelForm = () => {
     newGuest.phone_number = '';
 }
 
+const openAddForm = () => {
+    resetFormState();
+    isAddingGuest.value = true;
+    editingGuestId.value = null;
+};
+
 const removeGuest = async (guestId) => {
     if (confirm('¿Borrar huésped?')) {
         await store.deleteGuest(guestId, props.booking.id);
@@ -116,24 +186,68 @@ const removeGuest = async (guestId) => {
         <div>
             <button 
                 v-if="!isAddingGuest" 
-                @click="isAddingGuest = true"
-                class="bg-blue-500 text-white px-3 py-1 rounded">
+                @click="openAddForm"
+                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded transition">
                 + Añadir Huésped
             </button>
 
-            <form v-else @submit.prevent="saveGuest" class="bg-gray-100 p-2 mt-2">
-                <div class="flex flex-col gap-2">
-                    <input v-model="newGuest.first_name" placeholder="Nombre" required class="border p-1">
-                    <input v-model="newGuest.last_name" placeholder="Apellidos" required class="border p-1">
-                    <input v-model="newGuest.email" type="email" placeholder="Email" required class="border p-1">
-                    <input v-model="newGuest.phone_number" placeholder="Teléfono" class="border p-1">
+            <form v-else @submit.prevent="saveGuest" class="bg-gray-50 p-3 mt-2 rounded border border-gray-200 shadow-sm">
+                <div class="flex flex-col gap-3">
+
+                    <div>
+                        <input 
+                            v-model="newGuest.first_name" 
+                            placeholder="Nombre" 
+                            class="border p-1 w-full rounded"
+                            :class="errors.first_name ? 'border-red-500 bg-red-50' : 'border-gray-300'"
+                        >
+                        <span v-if="errors.first_name" class="text-red-500 text-xs">{{ errors.first_name }}</span>
+                    </div>
+
+                    <div>
+                        <input 
+                            v-model="newGuest.last_name" 
+                            placeholder="Apellidos" 
+                            class="border p-1 w-full rounded"
+                            :class="errors.last_name ? 'border-red-500 bg-red-50' : 'border-gray-300'"
+                        >
+                        <span v-if="errors.last_name" class="text-red-500 text-xs">{{ errors.last_name }}</span>
+                    </div>
+
+                    <div>
+                        <input 
+                            v-model="newGuest.email" 
+                            type="text" 
+                            placeholder="Email" 
+                            class="border p-1 w-full rounded"
+                            :class="errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'"
+                        >
+                        <span v-if="errors.email" class="text-red-500 text-xs">{{ errors.email }}</span>
+                    </div>
+
+                    <div>
+                        <input 
+                            v-model="newGuest.phone_number" 
+                            placeholder="Teléfono (Opcional)" 
+                            class="border p-1 w-full rounded"
+                            :class="errors.phone_number ? 'border-red-500 bg-red-50' : 'border-gray-300'"
+                        >
+                        <span v-if="errors.phone_number" class="text-red-500 text-xs">{{ errors.phone_number }}</span>
+                    </div>
                 </div>
 
-                <div class="mt-2 flex gap-2">
-                    <button type="submit" :disabled="isSubmitting" class="bg-green-500 text-white px-3 py-1 rounded">
-                        Guardar
+                <div class="mt-4 flex gap-2">
+                    <button 
+                        type="submit" 
+                        :disabled="isSubmitting" 
+                        class="bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white px-3 py-1 rounded transition">
+                        {{ isSubmitting ? 'Guardando...' : 'Guardar' }}
                     </button>
-                    <button type="button" @click="cancelForm" class="bg-gray-500 text-white px-3 py-1 rounded">
+
+                    <button 
+                        type="button" 
+                        @click="cancelForm" 
+                        class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded transition">
                         Cancelar
                     </button>
                 </div>
