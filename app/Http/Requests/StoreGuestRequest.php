@@ -11,7 +11,8 @@ class StoreGuestRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        // For simplicity during the practical test, we allow all requests.
+        return true;
     }
 
     /**
