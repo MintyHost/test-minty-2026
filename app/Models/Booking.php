@@ -29,4 +29,10 @@ class Booking extends Model
             'checkout_at' => 'datetime',
         ];
     }
+
+    // Relationship to Guest
+    public function guests()
+    {
+        return $this->hasMany(Guest::class);
+    }
 }

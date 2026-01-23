@@ -14,5 +14,12 @@ class Guest extends Model
         'last_name',
         'email',
         'phone_number',
+        'booking_id',
     ];
+
+    // Relationship to Booking
+    public function booking()
+    {
+        return $this->belongsTo(Booking::class);
+    }
 }
