@@ -15,16 +15,23 @@ class GuestApiTest extends TestCase
     {
         $booking = Booking::factory()->create();
 
-        $response = $this->postJson('/api/guests', [
+        $payload = [
             'first_name' => 'Juanjo',
             'last_name' => 'Sanchez',
             'email' => 'juanjo@example.com',
             'phone_number' => '1234567890',
             'booking_id' => $booking->id,
-        ]);
+        ];
 
         $response = $this->postJson('/api/guests', $payload);
 
         $response->assertCreated();
+    }
+
+    public function test_cannot_create_guest_with_invalid_data()
+    {
+        $response = $this->postJson('/api/guests', []);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['booking_id', 'first_name', 'email']);
     }
 }

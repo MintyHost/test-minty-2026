@@ -19,7 +19,7 @@ class BookingFactory extends Factory
         return [
             'checkin_at' => $this->faker->dateTimeBetween('+1 days', '+1 month'),
             'checkout_at' => $this->faker->dateTimeBetween('+2 days', '+2 months'),
-            'status' => $this->faker->randomElement(['confirmed', 'canceled']),
+            'status' => $this->faker->randomElement(['confirmed', 'cancelled']),
         ];
     }
 }
